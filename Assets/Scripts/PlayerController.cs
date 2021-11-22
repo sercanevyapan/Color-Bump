@@ -15,6 +15,12 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>(); 
     }
 
+    private void Update()
+    {
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, -bounds, bounds), transform.position.y, transform.position.z);
+        transform.position += FindObjectOfType<CameraMovement>().camVel;
+
+    }
 
     private void FixedUpdate()
     {
@@ -28,7 +34,9 @@ public class PlayerController : MonoBehaviour
             vector = new Vector3(vector.x, 0, vector.y);
 
             Vector3 moveForce = Vector3.ClampMagnitude(vector, clampDelta);
-            rb.AddForce(/*Vector3.forward *2 +*/ (-moveForce * sensitivity - rb.velocity/5), ForceMode.VelocityChange);
+            rb.AddForce(-moveForce * sensitivity - rb.velocity/5f, ForceMode.VelocityChange);
         }
+
+        rb.velocity.Normalize();
     }
 }
