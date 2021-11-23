@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     public float bounds = 5;
 
     [HideInInspector]
-    public bool canMove, gameOver;
+    public bool canMove, gameOver, finish;
 
     void Awake()
     {
@@ -25,12 +25,12 @@ public class PlayerController : MonoBehaviour
         if(canMove)
             transform.position += FindObjectOfType<CameraMovement>().camVel;
 
-        if (!canMove && gameOver)
+        if (!canMove && gameOver )
         {
             if (Input.GetMouseButtonDown(0))         
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             
-        } else if (!canMove)
+        } else if (!canMove && !finish)
         {
             if (Input.GetMouseButtonDown(0))
                 canMove = true;
@@ -71,11 +71,28 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    IEnumerator NextLevel()
+    {
+        finish = true;
+        canMove = false;
+        PlayerPrefs.SetInt("Level", PlayerPrefs.GetInt("Level", 1) + 1);
+        yield return new WaitForSeconds(1);
+        SceneManager.LoadScene("Level" + PlayerPrefs.GetInt("Level"));
+    }
+
     private void GameOver()
     {
         canMove = false;
         gameOver = true;
         GetComponent<MeshRenderer>().enabled = false;
         GetComponent<Collider>().enabled = false;
+    }
+
+    private void OnTriggerEnter(Collider target)
+    {
+        if(target.gameObject.name == "Finish")
+        {
+            StartCoroutine(NextLevel());
+        }
     }
 }
