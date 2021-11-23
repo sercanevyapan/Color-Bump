@@ -33,7 +33,11 @@ public class PlayerController : MonoBehaviour
         } else if (!canMove && !finish)
         {
             if (Input.GetMouseButtonDown(0))
+            {
+                FindObjectOfType<GameManager>().RemoveUI();
                 canMove = true;
+            }
+                
             
         }
 
