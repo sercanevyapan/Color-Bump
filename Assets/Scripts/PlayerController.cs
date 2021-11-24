@@ -29,7 +29,9 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))         
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            
+            Time.timeScale = 1;
+            Time.fixedDeltaTime = Time.timeScale * 0.02f;
+
         } else if (!canMove && !finish)
         {
             if (Input.GetMouseButtonDown(0))
@@ -71,7 +73,8 @@ public class PlayerController : MonoBehaviour
     {
         if (target.gameObject.tag=="Enemy")
         {
-            GameOver();
+            if(!gameOver)
+                GameOver();
         }
     }
 
@@ -84,12 +87,17 @@ public class PlayerController : MonoBehaviour
         SceneManager.LoadScene("Level" + PlayerPrefs.GetInt("Level"));
     }
 
+    
+
     private void GameOver()
     {
         canMove = false;
         gameOver = true;
         GetComponent<MeshRenderer>().enabled = false;
         GetComponent<Collider>().enabled = false;
+
+        Time.timeScale = .3f;
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;
     }
 
     private void OnTriggerEnter(Collider target)
